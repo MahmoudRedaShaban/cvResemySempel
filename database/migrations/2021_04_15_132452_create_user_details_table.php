@@ -22,7 +22,7 @@ class CreateUserDetailsTable extends Migration
             $table->string('address')->nullable();
             $table->text('summary');
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('user')->onDelete('cascade');
+            $table->foreign("user_id")->references("id")->on('users')->onDelete('cascade');
         });
     }
 

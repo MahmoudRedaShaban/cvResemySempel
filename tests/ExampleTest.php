@@ -18,4 +18,6 @@ class ExampleTest extends TestCase
             $this->app->version(), $this->response->getContent()
         );
     }
+
+
 }

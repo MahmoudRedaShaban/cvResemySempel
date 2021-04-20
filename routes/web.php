@@ -2,6 +2,8 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
+use App\Models\User;
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -14,8 +16,7 @@
 */
 
 $router->get('/', function () use ($router) {
-    // return $router->app->version();
-    return redirect()->route('register');
+    return $router->app->version();
 });
 
 
@@ -23,8 +24,10 @@ $router->group(['prefix'=> 'api'],function () use($router){
 
     /* Register */
     $router->post('/register',['as' => 'register', 'uses' =>"AuthController@register"]);
-    /* TODO LOGIN */
-    // $router->post('/login',"AuthController@login");
+
+
+    // $router->post('/userdetails',"UserDetailsController@store");
+
 
     $router->group(['middleware' => 'auth'],function ()  use($router){
 

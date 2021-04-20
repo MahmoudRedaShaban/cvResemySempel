@@ -40,9 +40,11 @@ class JobsController extends Controller
         }
         try {
             $alldata = $request->only(['connection','queue','payload',"exception"]);
+            // $alldata = $request->all();
             // add id User to array Data
-            array_push($alldata,["user_id"=>auth()->user()->id]);
+            $alldata["user_id"]=auth()->user()->id;
             if (Jobs::create($alldata)) {
+                die(dd($alldata));
                 return  response()->json(['status' => 'success',"message"=> "Add New   Jobs..."],201);
             }else {
                 return  response()->json(["status"=> "Faild", "message" => "Erro In Add New Jobs. Please Try Again"],400);

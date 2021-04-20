@@ -23,7 +23,7 @@ class CreateEducationTable extends Migration
             $table->date('graduation_start_date');
             $table->date('graduation_end_date');
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('user')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

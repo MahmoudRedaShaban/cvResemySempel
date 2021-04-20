@@ -21,7 +21,7 @@ class CreateFailedJobsTable extends Migration
             $table->longText('payload');
             $table->longText('exception');
             $table->timestamp('failed_at')->useCurrent();
-            $table->foreign('user_id')->references('id')->on('user')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -35,3 +35,6 @@ class CreateFailedJobsTable extends Migration
         Schema::dropIfExists('failed_jobs');
     }
 }
+
+
+// $table->integer('user_id')->unsigned()->index()->nullable();

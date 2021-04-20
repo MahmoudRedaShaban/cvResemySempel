@@ -4,39 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 class AuthController extends Controller
 {
 
-    public function login(Request $request)
-    {
-        # TODO Create Login Other  Defrant Login Passport
-        /*  $email = $request->email;
-        $password = $request->password;
-        // check if field is not empty
-        if(empty($email) || empty($password)){
-            return response()->json(['status'=> 'error', 'message'=>'You must fill all fields.']);
-        }
-        // using Lip Http [Guzzle] to post request
-        $client =  new Client();
 
-        try { //Connection refused for URI
-            $result = $client->post(
-            // $result = $client->request('POST',
-                config('service.passport.login_endpoint'),[
-                "form_params" => [
-                    "client_secret" => config('service.passport.PASSPORT_CLIENT_SECRET'),
-                    "grant_type" => "password",
-                    "client_id" => config('service.passport.PASSPORT_CLIENT_ID'),
-                    "username"=> $email,
-                    "password" =>$password
-                    ]
-                    ]);
-                    return response()->json(['status'=> 'success','message'=>''.$email.''.$password]);
-        } catch (BadResponseException $e) {
-            return response()->json(['status'=> 'error','message'=>$e->getMessage()]);
-        } */
-    }
 
 
 
@@ -70,8 +43,8 @@ class AuthController extends Controller
             $user->email = $email;
             $user->password = app('hash')->make($password);
             if($user->save()){
-                $result = $this->login($request);
-                return response()->json(['status'=> 'success', 'message'=>'User Created successfuly','login'=>$result]);
+                // $result = $this->login($request);
+                return response()->json(['status'=> 'success', 'message'=>'User Created successfuly']);
             }
         } catch (\Exception $e) {
             return response()->json(['status'=> 'error', 'message'=>$e->getMessage()]);
