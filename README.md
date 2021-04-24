@@ -14,9 +14,6 @@ Sempil API Rroject  From Resemy     .
 
 Laravel Lumen is a stunningly fast PHP micro-framework for building web applications with expressive, [Lumen website](https://lumen.laravel.com/docs).
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Lumen, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
 
 ## License
 
