@@ -15,7 +15,7 @@ class SkillsController extends Controller
     public function index()
     {
         try {
-            $data = auth()->user()->skills;
+            $data = Skills::where('user_id','=',auth()->user()->id)->get();
             if ($data) {
                 return  response()->json($data, 200);
             } else {
@@ -39,9 +39,9 @@ class SkillsController extends Controller
             return  response()->json(['status' => 'error', 'message' => $this->errorFeildes($emptyData)], 400);
         }
         try {
-            $alldata = $request->only(['name', 'rating']);
+            $alldata = $request->only('name', 'rating');
             // add id User to array Data
-            array_push($alldata, ["user_id" => auth()->user()->id]);
+            $alldata["user_id"]= auth()->user()->id;
             if (Skills::create($alldata)) {
                 return  response()->json(['status' => 'success', "message" => "Add New Skills..."], 201);
             } else {
@@ -58,13 +58,10 @@ class SkillsController extends Controller
      * @param  \App\Models\Skills  $skills
      * @return \Illuminate\Http\Response
      */
-    public function show(Skills $skills)
+    public function show($id)
     {
         try{
-            if($skills->user_id != auth()->user()->id){
-                return  response()->json(["status"=> "Faild", "message" => " Please check for Access !"],401);
-            }
-
+            $skills = Skills::findOrFail($id);
             return  response()->json($skills,200);
         } catch (\Exception $e) {
             return response()->json(['status'=> 'error', 'message'=>$e->getMessage()], 400);
@@ -78,20 +75,19 @@ class SkillsController extends Controller
      * @param  \App\Models\Skills  $skills
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Skills $skills)
+    public function update(Request $request, $id)
     {
-        if($skills->user_id != auth()->user()->id){
-            return  response()->json(["status"=> "Faild", "message" => " Please check for Access !"],401);
-        }
-
-        $emptyData = $this->validIsEmpty($request,['name', 'rating']);
-        if($emptyData){
-            return  response()->json(['status'=> 'error', 'message'=>$this->errorFeildes($emptyData)],400);
-        }
         try{
-            $skills->name = $request->name;
-            $skills->rating = $request->rating;
-            if ($skills->save()) {
+            $skills = Skills::findOrFail($id);
+            if($skills->user_id != auth()->user()->id){
+                return  response()->json(["status"=> "Faild", "message" => " Please check for Access !"],401);
+            }
+            $emptyData = $this->validIsEmpty($request,['name', 'rating']);
+            if($emptyData){
+                return  response()->json(['status'=> 'error', 'message'=>$this->errorFeildes($emptyData)],400);
+            }
+
+            if ($skills->update($request->only('name', 'rating'))) {
                 return  response()->json(['status' => 'success',"message"=> "Update  Skills By Id..."],201);
             }else{
                 return  response()->json(["status"=> "Faild", "message" => "Erro In Update Skills. Please Try Again"],400);
@@ -107,13 +103,10 @@ class SkillsController extends Controller
      * @param  \App\Models\Skills  $skills
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Skills $skills)
+    public function destroy($id)
     {
         try{
-            if($skills->user_id != auth()->user()->id){
-                return  response()->json(["status"=> "Faild", "message" => " Please check for Access !"],401);
-            }
-
+            $skills = Skills::findOrFail($id);
             if ($skills->delete()) {
                 return  response()->json(['status' => 'success',"message"=> "Deleted  Skills By Id ..."],200);
             }

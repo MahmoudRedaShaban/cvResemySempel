@@ -15,14 +15,20 @@ class JobsController extends Controller
     public function index()
     {
         try {
-            $data =  auth()->user()->job;
-            if($data){
-                return  response()->json($data,200);
-            }else{
-                return  response()->json(["status"=> "Faild" , "message" => "Not Found Data .."],400);
+            $data = Jobs::where('user_id','=',auth()->user()->id)->get();
+            if ($data) {
+                return  response()->json($data, 201);
+            } else {
+                return  response()->json([
+                    "status" => "Faild",
+                    "message" => "Not Found Data "
+                ], 400);
             }
         } catch (\Exception $e) {
-            return response()->json(['status'=> 'error', 'message'=>$e->getMessage()], 400);
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 400);
         }
     }
 
@@ -43,8 +49,8 @@ class JobsController extends Controller
             // $alldata = $request->all();
             // add id User to array Data
             $alldata["user_id"]=auth()->user()->id;
-            if (Jobs::create($alldata)) {
-                die(dd($alldata));
+            $jobs = Jobs::create($alldata);
+            if ($jobs) {
                 return  response()->json(['status' => 'success',"message"=> "Add New   Jobs..."],201);
             }else {
                 return  response()->json(["status"=> "Faild", "message" => "Erro In Add New Jobs. Please Try Again"],400);
@@ -60,13 +66,10 @@ class JobsController extends Controller
      * @param  \App\Models\Jobs  $jobs
      * @return \Illuminate\Http\Response
      */
-    public function show(Jobs $jobs)
+    public function show($id)
     {
         try{
-            if($jobs->user_id != auth()->user()->id){
-                return  response()->json(["status"=> "Faild", "message" => " Please check for Access !"],401);
-            }
-
+            $jobs = Jobs::findOrFail($id);
             return  response()->json($jobs,200);
         } catch (\Exception $e) {
             return response()->json(['status'=> 'error', 'message'=>$e->getMessage()], 400);
@@ -80,22 +83,19 @@ class JobsController extends Controller
      * @param  \App\Models\Jobs  $jobs
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Jobs $jobs)
+    public function update(Request $request,  $id)
     {
-        if($jobs->user_id != auth()->user()->id){
-            return  response()->json(["status"=> "Faild", "message" => " Please check for Access !"],401);
-        }
-
-        $emptyData = $this->validIsEmpty($request,['connection','queue','payload',"exception"]);
-        if($emptyData){
-            return  response()->json(['status'=> 'error', 'message'=>$this->errorFeildes($emptyData)],400);
-        }
         try{
-            $jobs->connection = $request->connection;
-            $jobs->queue = $request->queue;
-            $jobs->payload = $request->payload;
-            $jobs->exception = $request->exception;
-            if ($jobs->save()) {
+            $jobs = Jobs::findOrFail($id);
+            if($jobs->user_id != auth()->user()->id){
+                return  response()->json(["status"=> "Faild", "message" => " Please check for Access !"],401);
+            }
+
+            $emptyData = $this->validIsEmpty($request,['connection','queue','payload','exception']);
+            if($emptyData){
+                return  response()->json(['status'=> 'error', 'message'=>$this->errorFeildes($emptyData)],400);
+            }
+            if ($jobs->update($request->only('connection','queue','payload','exception'))) {
                 return  response()->json(['status' => 'success',"message"=> "Update  Jobs By Id..."],201);
             }else{
                 return  response()->json(["status"=> "Faild", "message" => "Erro In Update Jobs. Please Try Again"],400);
@@ -112,9 +112,10 @@ class JobsController extends Controller
      * @param  \App\Models\Jobs  $jobs
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Jobs $jobs)
+    public function destroy($id)
     {
         try{
+            $jobs = Jobs::findOrFail($id);
             if($jobs->user_id != auth()->user()->id){
                 return  response()->json(["status"=> "Faild", "message" => " Please check for Access !"],401);
             }

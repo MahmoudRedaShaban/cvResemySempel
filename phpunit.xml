@@ -6,8 +6,8 @@
          verbose="true"
 >
     <testsuites>
-        <testsuite name="Application Test Suite">
-            <directory suffix="Test.php">./tests</directory>
+        <testsuite name="unit">
+            <directory >./tests</directory>
         </testsuite>
     </testsuites>
     <php>
@@ -16,3 +16,6 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
     </php>
 </phpunit>
+
+
+            <!-- <directory suffix="Test.php">./tests</directory> -->
